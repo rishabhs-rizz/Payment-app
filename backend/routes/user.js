@@ -5,6 +5,7 @@ const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const { User } = require("../db")
 const { JWT_SECRET } = require("../config");
+const { auth_middleware } = require("../middleware")
 
 const signupBody = zod.object({
     username: zod.string().email(),
@@ -14,7 +15,7 @@ const signupBody = zod.object({
 })
 
 router.get("/signup", async (req, res) => {
-    const success = signupBody.safeParse(req.body);
+    const { success } = signupBody.safeParse(req.body);
     if(!success){ // stop if given data is not in required format
         return res.json({
             message: "E-mail already exists/incorrect inputs"
@@ -47,6 +48,30 @@ router.get("/signup", async (req, res) => {
     res.json({
         message: "user successfully registered",
         token: token
+    })
+})
+
+const updatedBody = zod.object({
+
+    password: zod.string().optional(),
+    firstName: zod.string().optional(),
+    lastName: zod.string().optional()
+})
+
+router.put("/", auth_middleware, async (req, res) => {
+    const { success } = signupBody.safeParse(req.body);
+    if(!success){ // stop if given data is not in required format
+        return res.json({
+            message: "error while updating information"
+        })
+    }
+
+    await User.updateOne(req.body, {
+        id: req.UserId
+    })
+
+    res.json({
+        message: "updated successfully"
     })
 })
 
