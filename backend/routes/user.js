@@ -59,7 +59,7 @@ const updatedBody = zod.object({
 })
 
 router.put("/", auth_middleware, async (req, res) => {
-    const { success } = signupBody.safeParse(req.body);
+    const { success } = updatedBody.safeParse(req.body);
     if(!success){ // stop if given data is not in required format
         return res.json({
             message: "error while updating information"
@@ -72,6 +72,30 @@ router.put("/", auth_middleware, async (req, res) => {
 
     res.json({
         message: "updated successfully"
+    })
+})
+
+router.get("/bulk", auth_middleware, async (req , res) => {
+    const filter = req.query.filter || "";
+
+    const Users = await User.find({
+        $or: [{
+            firstName: {
+                $regex: filter
+            },
+            lastName: {
+                $regex: filter
+            }
+        }]
+    })
+
+    res.json({
+        user: Users.map(user => ({
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            _id: user._id
+        }))
     })
 })
 
