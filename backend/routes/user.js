@@ -5,8 +5,8 @@ const zod = require("zod");
 const jwt = require("jsonwebtoken");
 const { User } = require("../db");
 const { Account } = require("../db")
-const { JWT_SECRET } = require("../config");
-const { auth_middleware } = require("../middleware")
+const JWT_SECRET  = require("../config");
+const  auth_middleware  = require("../middleware")
 
 const signupBody = zod.object({
     username: zod.string().email(),
@@ -15,7 +15,7 @@ const signupBody = zod.object({
     password: zod.string()
 })
 
-router.get("/signup", async (req, res) => {
+router.post("/signup", async (req, res) => {
     const { success } = signupBody.safeParse(req.body);
     if(!success){ // stop if given data is not in required format
         return res.json({
@@ -42,13 +42,15 @@ router.get("/signup", async (req, res) => {
     })
     const UserId = user._id
 
+    console.log(Account)
+
     await Account.create({
-        UserId,
+        userId: UserId,
         balance: 1 + Math.random() * 10000
     })
 
     const token = jwt.sign({
-        UserId
+        UserId: UserId
     }, JWT_SECRET);
 
     res.json({
@@ -64,7 +66,7 @@ const updatedBody = zod.object({
     lastName: zod.string().optional()
 })
 
-router.put("/", auth_middleware, async (req, res) => {
+router.put("/updation", auth_middleware, async (req, res) => {
     const { success } = updatedBody.safeParse(req.body);
     if(!success){ // stop if given data is not in required format
         return res.json({

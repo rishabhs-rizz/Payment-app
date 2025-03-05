@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get("/balance", auth_middleware, async (req , res) => {
     const account = await Account.findOne({
-        userId: req.userId
+        userId: req.UserId
     })
 
     res.json({
