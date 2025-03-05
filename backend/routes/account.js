@@ -21,7 +21,7 @@ router.post("/transfer", auth_middleware, async (req , res) => {
     const { amount , to } = req.body;
 
     const account = await Account.findOne({
-        userId: req.userId
+        userId: req.UserId
     }).session(session);
 
     if(!account || account.balance < amount){
@@ -42,7 +42,7 @@ router.post("/transfer", auth_middleware, async (req , res) => {
         });
     }
 
-    await Account.updateOne({ userId: req.userId }, { $inc: { balance: -amount}}).session(session);
+    await Account.updateOne({ userId: req.UserId }, { $inc: { balance: -amount}}).session(session);
 
     await Account.updateOne({ userId: to }, { $inc: { balance: amount }}).session(session);
 
