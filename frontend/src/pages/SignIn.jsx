@@ -13,7 +13,7 @@ export default function SignIn() {
                 <InputLabel entry={"Username"} placeholder={"nickyyp@gmail.com"} />
                 <InputLabel entry={"Password"} placeholder={"ding_ding***"} />
                 <Button label={"SUBMIT"}/>
-                <BottomWarning warning={"Already have an account ! SignIn"}></BottomWarning>
+                <BottomWarning warning={"Don't have an account ! SignUp"}></BottomWarning>
             </div>
         </div>
 }
